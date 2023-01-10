@@ -37,7 +37,11 @@ const userShema = new mongoose.Schema({
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Pet'
 		}
-	]
+	],
+
+}, {
+	timestamps: true,
+	collection: 'users',
 });
 
 userShema.pre('save', async function (next){
