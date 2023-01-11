@@ -35,7 +35,7 @@ exports.loginUser = async (req, res) => {
 			});
 		}
 		
-		const token = await iuser.generateToken();
+		const token = await user.generateToken();
 		return res.status(201).json({
 			message: "usuário(a) logado com sucesso!", user, token
 		});
