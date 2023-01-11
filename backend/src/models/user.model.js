@@ -1,34 +1,21 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const { Schema } = mongoose;
 
-const userShema = new mongoose.Schema({
-	name: {
-		type: String,
-		required: true
-	},
-	email: {
-		type: String,
-		required: true,
-		unique: true,
-		lowercase: true
-	},
-	password: {
-		type: String,
-		required: true,
-		select: false
-	},
-	address: {
-		type: String,
-		required: true
-	},
-	phone: {
-		type: String,
-		required: true
-	},
-	adopt: {
+const userSchema = new Schema({
+  name: { type: String, maxlength: 50, required: true },
+  email: { type: String, maxlength: 30, required: true },
+  password: { type: String, required: true },
+  address: { type: String, required: true },
+  phone: { type: String, required: true },
+  tokens: [
+    {
+      token: { type: String, required: true },
+    },
+  ],
+  adopt: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Pet'
 	},
@@ -38,32 +25,43 @@ const userShema = new mongoose.Schema({
 			ref: 'Pet'
 		}
 	],
-
 }, {
-	timestamps: true,
-	collection: 'users',
+  timestamps: true,
+  collection: 'users',
 });
 
-userShema.pre('save', async function (next){
-	const hash = await bcrypt.hash(this.password, 10);
-	this.password = hash;
-
-	next();
+// ==> Esse método irá fazer o 'hash' da senha antes de salvar o modelo da classe 'User'
+userSchema.pre('save', async function (next) {
+  const user = this;
+  if (user.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+  next();
 });
 
-userShema.methods = {
-	checkPassword: function (password) {
-		return bcrypt.compare(password, this.password);
-	},
-	generateToken: function () {
-		return jwt.sign(
-			{ id: this._id },
-			process.env.APP_SECRET, {
-				expiresIn: 86400,
-			});
-	}
+// ==> Esse método irá criar (gerar) uma autenticação auth para o 'User'
+userSchema.methods.generateAuthToken = async function () {
+  const user = this;
+  const token = jwt.sign({ _id: user._id, name: user.name, email: user.email }, 'secret');
+  user.tokens = user.tokens.concat({ token });
+  await user.save();
+  return token;
 };
 
-const User = mongoose.model('User', userShema);
+// ==> Esse método irá fazer uma pesquisa por um 'user' por 'email' e 'password'
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email });
+  console.log(user);
+  if (!user) {
+    throw new Error({ error: 'Login inválido!' });
+  }
+  const isPasswordMatch = await bcrypt.compare(password, user.password);
+  if (!isPasswordMatch) {
+    throw new Error({ error: 'Login inválido!' });
+  }
+  return user;
+};
+
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

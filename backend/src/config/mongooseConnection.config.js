@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
-const database = require('./db.config');
+
+// ==> Importar o arquivo: 'db.config.js'
+const database = require('./db.config'); // ==> aqui é conexão local: MongoDB
 
 mongoose.Promise = global.Promise;
 
-// ==> Conexão com a Base de Dados:
-
+// ==> Conexão Base de Dados:
 mongoose.connect(process.env.MONGO_URI, {
 }).then(() => {
-	console.log('A Base de dados foi conectada com sucesso!');
-},(err) => {
-	console.log(`Erro ao conectar com a Base de dados...: ${err}`);
-	process.exit();
-})
+  console.log('A Base de Dados foi conectada com sucesso!');
+}, (err) => {
+  console.log(`Erro ao conectar com a Base de Dados...: ${err}`);
+  process.exit();
+});
