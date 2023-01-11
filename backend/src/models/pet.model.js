@@ -20,13 +20,11 @@ const petSchema = new Schema({
     },
     adoptingUser: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User', 
     },
     offeringUser: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
     }
 });
 
