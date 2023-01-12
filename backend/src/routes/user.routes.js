@@ -12,4 +12,7 @@ router.post('/login', userController.loginUser);
 // ==> Rota responsável por retornar o perfil/profile do 'User': (GET): localhost:3000/api/v1/userProfile
 router.get('/userProfile', auth, userController.returnUserProfile);
 
+// ==> Rota respansável por um 'User' adotar um 'Pet': (PATCH): localhost:3000/api/v1/pets/:id/adopt
+router.patch('/pets/:id/adopt', auth, userController.adoptPet);
+
 module.exports = router;

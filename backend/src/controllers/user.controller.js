@@ -1,5 +1,5 @@
 const User = require('../models/user.model');
-
+const Pet = require('../models/pet.model');
 // => Async e await 
 
 //=> Método responsável para registrar um novo 'User'
@@ -45,3 +45,26 @@ exports.loginUser = async (req, res) => {
 exports.returnUserProfile = async (req, res) => {
 	await res.json(req.userData);
 };
+
+exports.adoptPet = async (req, res) => {
+	try {
+	  const { id } = req.params;
+	  const { userData } = req;
+	  // find pet by id
+	  const pet = await Pet.findById(id);
+	  if (!pet) {
+		return res.status(404).json({ message: 'Pet not found' });
+	  }
+	  // update pet's adoptingUser field with user's id
+	  pet.adoptingUser = userData._id;
+	  await pet.save();
+	  // find the user and update the adopt field with pet's id
+	  const user = await User.findById(userData._id);
+	  user.adopt = id;
+	  await user.save();
+	  res.status(200).json({ message: 'Pet adopted successfully', pet });
+	} catch (err) {
+	  res.status(500).json({ err });
+	}
+  };
+  
