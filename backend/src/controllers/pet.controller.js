@@ -19,3 +19,14 @@ exports.createPet = async (req, res) => {
     }
   });
 };
+
+exports.getAllPets = async (req, res) => {
+    checkAuth(req, res, async () => {
+      try {
+        const pets = await Pet.find();
+        return res.status(200).json({ pets });
+      } catch (err) {
+        return res.status(500).json({ error: 'An error occurred while retrieving pets' });
+      }
+    });
+  };
