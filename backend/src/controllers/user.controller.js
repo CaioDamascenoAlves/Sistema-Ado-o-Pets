@@ -39,9 +39,9 @@ exports.loginUser = async (req, res) => {
 	} catch (err) {
 	  return res.status(400).json({ err });
 	}
-  };
+};
   
   // ==> Método responsável por retornar um determinado 'User'
-  exports.returnUserProfile = async (req, res) => {
+exports.returnUserProfile = async (req, res) => {
 	await res.json(req.userData);
-  };
+};

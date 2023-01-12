@@ -21,12 +21,26 @@ exports.createPet = async (req, res) => {
 };
 
 exports.getAllPets = async (req, res) => {
-    checkAuth(req, res, async () => {
+  checkAuth(req, res, async () => {
       try {
         const pets = await Pet.find();
         return res.status(200).json({ pets });
       } catch (err) {
         return res.status(500).json({ error: 'An error occurred while retrieving pets' });
+    }
+  });
+};
+
+exports.getPetById = async (req, res) => {
+  checkAuth(req, res, async () => {
+    try {
+      const pet = await Pet.findById(req.params.id);
+      if (!pet) {
+        return res.status(404).json({ error: 'Pet not found' });
       }
-    });
-  };
+      return res.status(200).json({ pet });
+    } catch (err) {
+      return res.status(500).json({ error: 'An error occurred while retrieving pet' });
+    }
+  });
+};
