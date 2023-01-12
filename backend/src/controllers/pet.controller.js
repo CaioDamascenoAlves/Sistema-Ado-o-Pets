@@ -44,3 +44,16 @@ exports.getPetById = async (req, res) => {
     }
   });
 };
+
+exports.getPetByName = async (req, res) => {
+  try {
+    const { name } = req.params;
+    const pet = await Pet.findOne({ name });
+    if (!pet) {
+      return res.status(404).json({ message: 'Pet not found' });
+    }
+    res.status(200).json({ pet });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+};

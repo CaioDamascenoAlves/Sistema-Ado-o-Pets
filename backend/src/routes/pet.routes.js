@@ -12,4 +12,7 @@ router.get('/pets', auth, petController.getAllPets);
 // ==> Rota responsável por Buscar todos os 'Pets': (POST): localhost:3000/api/v1/pets/:id
 router.get('/pets/:id', auth, petController.getPetById);
 
+// ==> Rota responsável por Buscar todos os 'Pets': (POST): localhost:3000/api/v1/pets/nome/:nome
+router.get('/pets/name/:name', auth, petController.getPetByName);
+
 module.exports = router;
