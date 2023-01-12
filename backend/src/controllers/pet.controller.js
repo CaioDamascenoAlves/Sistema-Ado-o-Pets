@@ -46,27 +46,46 @@ exports.getPetById = async (req, res) => {
 };
 
 exports.getPetByName = async (req, res) => {
-  try {
-    const { name } = req.params;
-    const pet = await Pet.findOne({ name });
-    if (!pet) {
-      return res.status(404).json({ message: 'Pet not found' });
+  checkAuth(req, res, async () => {
+    try {
+      const { name } = req.params;
+      const pet = await Pet.findOne({ name });
+      if (!pet) {
+        return res.status(404).json({ message: 'Pet not found' });
+      }
+      res.status(200).json({ pet });
+    } catch (err) {
+      res.status(500).json({ err });
     }
-    res.status(200).json({ pet });
-  } catch (err) {
-    res.status(500).json({ err });
-  }
+  });
 };
 
 exports.updatePetById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updatedPet = await Pet.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updatedPet) {
-      return res.status(404).json({ message: 'Pet not found' });
+  checkAuth(req, res, async () => {
+    try {
+      const { id } = req.params;
+      const updatedPet = await Pet.findByIdAndUpdate(id, req.body, { new: true });
+      if (!updatedPet) {
+        return res.status(404).json({ message: 'Pet not found' });
+      }
+      res.status(200).json({ message: 'Pet updated successfully', updatedPet });
+    } catch (err) {
+      res.status(500).json({ err });
     }
-    res.status(200).json({ message: 'Pet updated successfully', updatedPet });
-  } catch (err) {
+  });  
+};
+
+exports.deletePetById = async (req, res) => {
+  checkAuth(req, res, async () => {
+    try {
+      const { id } = req.params;
+      const deletedPet = await Pet.findByIdAndDelete(id);
+      if (!deletedPet) {
+        return res.status(404).json({ message: 'Pet not found' });
+      }
+      res.status(200).json({ message: 'Pet deleted successfully' });
+    } catch (err) {
     res.status(500).json({ err });
-  }
+    }
+  });
 };

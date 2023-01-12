@@ -18,4 +18,7 @@ router.get('/pets/name/:name', auth, petController.getPetByName);
 // ==> Rota responsável por Atualizar um determinado 'Pet' por ID: (PUT): localhost:3000/api/v1/pets/:id
 router.put('/pets/:id', auth, petController.updatePetById);
 
+// ==> Rota responsável por Deletar um determinado 'Pet' por ID: (DELETE): localhost:3000/api/v1/pets/:id
+router.delete('/pets/:id', auth, petController.deletePetById);
+
 module.exports = router;
