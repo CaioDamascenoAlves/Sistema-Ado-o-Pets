@@ -57,3 +57,16 @@ exports.getPetByName = async (req, res) => {
     res.status(500).json({ err });
   }
 };
+
+exports.updatePetById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedPet = await Pet.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updatedPet) {
+      return res.status(404).json({ message: 'Pet not found' });
+    }
+    res.status(200).json({ message: 'Pet updated successfully', updatedPet });
+  } catch (err) {
+    res.status(500).json({ err });
+  }
+};
